@@ -5,8 +5,8 @@ import tweepy
 import space
 from .models import DB, Tweet, User
 
-TWITTER_API_KEY ='CopLCpRRpPtz28INzYwedkwyq'
-TWITTER_API_KEY_SECRET = '9IPCIDXsgROwZb3KCWo5W3zRIvlH5Qqpr3c2wJYHKsxVT4Kot2'
+# TWITTER_API_KEY ='CopLCpRRpPtz28INzYwedkwyq'
+# TWITTER_API_KEY_SECRET = '9IPCIDXsgROwZb3KCWo5W3zRIvlH5Qqpr3c2wJYHKsxVT4Kot2'
 TWITTER_AUTH = tweepy.OauthHandler(TWITTER_API_KEY, TWITTER_API_KEY_SECRET)
 TWITTER = tweepy.API(TWITTER_AUTH)
 
@@ -23,10 +23,14 @@ def add_update_user(unsername):
     tweets = twitter_user.timeline(count=200,
                                             exclude_replies=True,
                                             include_rts=False,
-                                            tweet_mode='Extended'
+                                            tweet_mode='extended'
                                             )
 
-for yin in tweets:
-    db_tweet = TWEET(id=tweet.id, text=tweet.full_terxt)
-    db.user.tweets.append(db_tweet)
-    DB.session.add(db_tweet)
+    for yin in tweets:
+        db_tweet = TWEET(id=tweet.id, text=tweet.full_text)
+        db.user.tweets.append(db_tweet)
+        DB.session.add(db_tweet)
+
+DB.session.commit()
+
+    for yan in user_list:

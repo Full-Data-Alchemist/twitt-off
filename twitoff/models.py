@@ -1,5 +1,6 @@
+#TWITTOFF/twitoff/Models.py
 """
-# SQLAlchemy models and utility functions for twitoff
+SQLAlchemy models and utility functions for twitoff
 """
 
 from flask_sqlalchemy import SQLAlchemy
@@ -8,32 +9,39 @@ from flask_sqlalchemy import SQLAlchemy
 DB = SQLAlchemy()
 
 
-class User(DB.Model):
+class User(DB.Model): #creates a usesr table
     """
     Twitter Users corresponding tweets
     """
-    id = DB.Column(DB.BigInterger, primary_key=True)
-    name = DB.Column(DB.String, nullable=False)
-
+    id = DB.Column(DB.BigInteger, 
+                        primary_key=True) #id column Primary key
+    name = DB.Column(DB.String,    #new column
+                            nullable=False) #name column   
+    newest_tweet_is = DB.Column(DB.BigInteger) # newest tweet column
+    
+    
     def __repr__(self):
-        return "<User: {}>".format(self.name)
+        return f"<User:{self.name}>"
 
 
 class Tweet(DB.Model):
     """
     Tweets of the users
     """
-    id = DB.Column(DB.BigInterger,
-                         DB.ForeignKey('user.id'), nullable=False)
+    id = DB.Column(DB.BigInteger,
+                         primary_key=True)
     text =DB.Column(DB.Unicode(300))
-
-    user_id = DB.Column(DB.BigInterger, 
-                                DB.ForeignKey('user.id'), nullable=False)
+    vect = DB.Column(DB.PickleType,
+                            nullable=False)
+    user_id = DB.Column(DB.BigInteger, 
+                                DB.ForeignKey('user.id'),
+                                nullable=False)
     user = DB.relationship('User', 
-                                backref=DB.backref('tweets', lazy=True))
+                                backref=DB.backref('tweets',
+                                lazy=True))
 
     def __repr__(self):
-        return "tweet:{}".format(self.text)
+        return f"tweet:{self.text}"
 
 
     def  insert_example_users():
@@ -51,3 +59,16 @@ class Tweet(DB.Model):
             DB.session.add(yin)
         
         DB.session.commit()
+
+
+
+#random strech goal for self
+# import random
+
+#     def random_tweet(User):
+#         User = User.id
+
+#         tweet = []
+#         tweets = tweets.append(random.choice())
+
+#         return Tweet()

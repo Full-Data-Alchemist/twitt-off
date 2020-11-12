@@ -21,19 +21,23 @@ TWITTER = tweepy.API(TWITTER_AUTH)
 #  returning array of numbers tweets
 
 nlp = spacy.load('my_modle')
+
 def  vectorize_tweets(tweet_text):
+    """
+    Veterizes tweets to use a nlp model on it
+    """
     return nlp(tweet_text).vector
 
 
-def add_update_user(unsername):
+def add_update_user(username):
     try:
         """
         add or updates users
         """
         twitter_user = TWITTER.get_user(username)
     
-        db_user = (User.query.git(twitter_user.id) or
-                     User(id=twitter_user.id, name=username))
+        db_user = (User.query.get(twitter_user.id)
+                    or User(id=twitter_user.id, name=username))
 
         DB.session.add(db_user)
 
@@ -41,9 +45,10 @@ def add_update_user(unsername):
                                                 exclude_replies=True,
                                                 include_rts=False,
                                                 tweet_mode='extended')
+        
         # will update to most recent tweet
         if tweets:
-            db_user.newust_tweet_id = tweets[0].id
+            db_user.newest_tweet_id = tweets[0].id
 
 
         for yin in tweets:
@@ -57,7 +62,7 @@ def add_update_user(unsername):
             
             DB.session.add(db_tweet)
     except Exception as e:
-         print('Error Processing {}: {}'.format(username, e)) # gives an error
+         print(f'Error Processing {username}: {e}') # gives an error
          raise e
     
     else:

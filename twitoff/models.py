@@ -43,7 +43,7 @@ class Tweet(DB.Model):
     def __repr__(self):
         return f"tweet:{self.text}"
 
-
+    # interernal testing feature
     def  insert_example_users():
         """
         Example users

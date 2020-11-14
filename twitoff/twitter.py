@@ -8,7 +8,7 @@ from .models import DB, Tweet, User
 
 TWITTER_API_KEY = getenv("")
 TWITTER_API_KEY_SECRET = getenv("")
-TWITTER_AUTH = tweepy.OauthHandler(getenv('TWITTER_API_KEY'),
+TWITTER_AUTH = tweepy.OAuthHandler(getenv('TWITTER_API_KEY'),
                                                     (TWITTER_API_KEY_SECRET))
 
 TWITTER = tweepy.API(TWITTER_AUTH)

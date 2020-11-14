@@ -1,3 +1,8 @@
+"""
+Preediction for users based on tweet embeddings
+"""
+import numpy
+from sklearn.linear_model import LogisticRegression
 import pickle
 from .models import User
 from .twitter import vectorize_tweets

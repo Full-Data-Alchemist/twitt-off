@@ -1,16 +1,13 @@
 """
 reteive Tweets, word embedding, and populsate DB
 """
+from os import getenv
 import tweepy
 import spacy
 from .models import DB, Tweet, User
-from os import getenv
 
-TWITTER_USERS = ['calebhicks', 'elonmusk', 'rrherr', 'SteveMartinToGo',
-                            'alyankovic', 'nasa', 'sadserver', 'jkhowland', 'austen',
-                            'common_squirrel', 'KenJennings', 'conanobrien',
-                            'big_ben_clock', 'IAM_SHAKESPEARE']
-
+TWITTER_API_KEY = getenv("")
+TWITTER_API_KEY_SECRET = getenv("")
 TWITTER_AUTH = tweepy.OauthHandler(getenv('TWITTER_API_KEY'),
                                                     (TWITTER_API_KEY_SECRET))
 
@@ -19,7 +16,6 @@ TWITTER = tweepy.API(TWITTER_AUTH)
 
 
 #  returning array of numbers tweets
-
 nlp = spacy.load('my_modle')
 
 def  vectorize_tweets(tweet_text):
@@ -29,18 +25,19 @@ def  vectorize_tweets(tweet_text):
     return nlp(tweet_text).vector
 
 
-def add_update_user(username):
+def add_or_update_user(username):
     try:
         """
         add or updates users
         """
+        #grabs users from twitter DB
         twitter_user = TWITTER.get_user(username)
-    
+        #adds or updates user
         db_user = (User.query.get(twitter_user.id)
                     or User(id=twitter_user.id, name=username))
-
         DB.session.add(db_user)
 
+        #grabd tweets FROM twiter_user
         tweets = twitter_user.timeline(count=200,
                                                 exclude_replies=True,
                                                 include_rts=False,
@@ -50,36 +47,28 @@ def add_update_user(username):
         if tweets:
             db_user.newest_tweet_id = tweets[0].id
 
-
         for yin in tweets:
-            embedding = vectorize_tweets(tweet.full_text)
+            #stores numerical representations
+            vectorized_tweets = vectorize_tweets(yin.full_text)
+            embedding = vectorize_tweets(yin.full_text)
             
-            db_tweet = Tweet(id=tweet.id,
-                                    text=tweet.full_text[:300],
+            db_tweet = Tweet(id=yin.id,
+                                    text=yin.full_text[:300],
                                     embedding=embedding)
             
             db_user.tweets.append(db_tweet)
-            
             DB.session.add(db_tweet)
+   
     except Exception as e:
-         print(f'Error Processing {username}: {e}') # gives an error
-         raise e
+        print(f'Error Processing {username}: {e}') # gives an error
+        raise e
     
     else:
         DB.session.commit()
-
-
-def add_user(user=TWITTER_USERS):
-    """
-    add/update a list of users (string of the usernames).
-    May take awhile, so run "offline" (flask shell)
-    """
-    for yan in users:
-        add_or_update_user(yan)
 
 def update_all_users():
     """"
     Updates all tweets for all users in the user table
     """
     for yan in User.query.all():
-        add_update_user(yan.name) 
+        add_or_update_user(yan.name) 

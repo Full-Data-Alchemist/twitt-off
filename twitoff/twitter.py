@@ -16,7 +16,7 @@ TWITTER = tweepy.API(TWITTER_AUTH)
 
 
 #  returning array of numbers tweets
-nlp = spacy.load('my_modle')
+nlp = spacy.load('my_model')
 
 def  vectorize_tweets(tweet_text):
     """

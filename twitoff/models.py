@@ -53,7 +53,8 @@ class Tweet(DB.Model):
         Body_less = User(id=3, name="Alphonse Elric")
         Fallen_ishvalan = User(id=4, name="Scar")
         
-        users_list = [Mani, Not_little, Body_less, Fallen_ishvalan]
+        users_list = [Mani, Not_little, Body_less,
+                        Fallen_ishvalan]
 
         for yin in users_list:
             DB.session.add(yin)
